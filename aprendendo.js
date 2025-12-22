@@ -13,19 +13,19 @@ console.log("Houve um Erro ao se Conectar ao MongoDb!")
 const UsuariosScheme = mongoose.Schema({
     nome:{
         type:String , 
-        require: true 
+        required: true 
     }, 
     sobrenome:{
         type:String,
-        require:true
+        required:true
     },
     email:{
         type:String,
-        require:true
+        required:true
     }, 
     idade:{
         type:Number,
-        require:true 
+        required:true 
     }, 
     país:{
         type:String
