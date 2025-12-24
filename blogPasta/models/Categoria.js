@@ -15,4 +15,4 @@ const Categoria = new Schema({
         default:Date.now()
     }
 })
-mongoose.model("categorias",Categoria)
+mongoose.model("categorias",Categoria); 
