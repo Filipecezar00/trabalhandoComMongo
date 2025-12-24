@@ -18,7 +18,7 @@ const path = require("path")
     // Em breve 
         // Public
         app.use(express.static(path.join(__dirname,"public")))
-//Rotas 
+//Rotas   
 app.use('/admin',admin)
 // Outros 
 const port = 8081 ;
