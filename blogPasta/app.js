@@ -15,7 +15,11 @@ const path = require("path")
      app.set("view engine","handlebars"); 
      app.set("views",path.join(__dirname,"views")); 
 // Mongoose 
-    // Em breve 
+    mongoose.connect("mongodb://localhost/blogapp").then(()=>{
+        console.log("Conectado ao Mongo")
+    }).catch((err)=>{
+        console.log("Erro ao se Conectar: " + err )
+    })
         // Public
         app.use(express.static(path.join(__dirname,"public")))
 //Rotas   
