@@ -12,7 +12,14 @@ router.get('/posts',(req,res)=>{
 })
 
 router.get('/categorias',(req,res)=>{
-    res.render("admin/categorias"); 
+    Categoria.find().lean() 
+       .then((categorias)=>{
+        res.render("admin/categorias",{categorias})
+    })
+       .catch((err)=>{
+        req.flash("error_msg", "houve um Erro ao listar")
+        res.redirect("/admin")
+    })
 })
 
 router.post("/categorias/nova",(req,res)=>{
