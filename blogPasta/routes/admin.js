@@ -16,20 +16,35 @@ router.get('/categorias',(req,res)=>{
 })
 
 router.post("/categorias/nova",(req,res)=>{
-    const novaCategoria = {
+    var erros = []
+    if(!req.body.nome || typeof req.body.nome==undefined || req.body.nome == null ){
+     erros.push({texto:"Nome Inválido"})
+    }
+    if(!req.body.slug|| typeof req.body.slug==undefined || req.body.slug==null){
+        erros.push({texto:"Slug Inválido"})
+    }
+    if(req.body.nome && req.body.nome.length < 2){
+        erros.push({texto:"Nome da Categoria Muito Pequeno"})
+    }
+    if(erros.length>0){
+    return  res.render("admin/addcategorias",{erros:erros})
+    }else{
+        const novaCategoria = {
         nome:req.body.nome, 
         slug:req.body.slug 
-    } 
-    new Categoria(novaCategoria).save().then(()=>{
+        } 
+        new Categoria(novaCategoria).save().then(()=>{
+        req.flash("success_msg","Categoria Criada Com Sucesso")
         res.redirect("/admin/categorias"); 
-        console.log("Categoria Salva com Sucesso")
     }).catch((err)=>{
-        console.log("Houve um Erro"+ err)
+         req.flash("error_msg","Houve um erro ao registrar tente novamente")
+         res.redirect("/admin")
     })
+   }
 })
 
-router.get("/categorias/add",(req,res)=>{
-res.render("admin/addcategorias")
+  router.get("/categorias/add",(req,res)=>{
+  res.render("admin/addcategorias")
 })
 
 module.exports = router
