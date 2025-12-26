@@ -49,6 +49,55 @@ router.post("/categorias/nova",(req,res)=>{
     })
    }
 })
+  router.get("/categorias/edit/:id",(req,res)=>{
+    Categoria.findOne({_id:req.params.id}).lean().then((categoria)=>{
+         res.render("admin/editcategorias" , {categoria: categoria});
+    }).catch((err)=>{
+        req.flash('error_msg', "Esta Categoria Não Existe"); 
+        res.redirect("/admin/categorias"); 
+    })
+    
+  })
+    router.post("/categorias/edit",(req,res)=>{
+     let erros = []
+
+     if(!req.body.nome|| typeof req.body.nome==undefined ||req.body.nome==null){
+        erros.push({texto:"Nome Inválido para edição!"})
+     }
+     if(!req.body.slug|| typeof req.body.slug==undefined ||req.body.slug==null){
+        erros.push({texto:"Slug Invalido para edição!"})
+     }
+      
+     if(req.body.nome && req.body.nome.length<2){
+        erros.push({texto:"Nome pequeno demais para a categoria"})
+     }
+     if(!req.body.id){
+      erros.push({texto:"ID inválido"})
+     }
+
+     if(erros.length>0){
+        return Categoria.findById(req.body.id).lean().then((categoria)=>{
+            res.render("admin/editcategorias",{
+                erros, 
+                categoria 
+            })
+        }) 
+     }
+
+     Categoria.findByIdAndUpdate(req.body.id,{
+        nome:req.body.nome,
+        slug:req.body.slug 
+     })
+     .then(()=>{
+        req.flash("success_msg","Categoria Editada com Sucesso"); 
+        res.redirect("/admin/categorias"); 
+     })
+
+      .catch(()=>{
+        req.flash("error_msg", "Erro ao Editar Categoria")
+        res.redirect("/admin/categorias")
+      })
+ })
 
   router.get("/categorias/add",(req,res)=>{
   res.render("admin/addcategorias")
