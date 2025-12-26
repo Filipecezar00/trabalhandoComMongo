@@ -99,15 +99,16 @@ router.post("/categorias/nova",(req,res)=>{
       })
  })
   router.post("/categorias/deletar",(req,res)=>{
-    Categoria.remove({_id:req.body.id}).then(()=>{
+     Categoria.findByIdAndDelete(req.body.id)
+      .then(()=>{
         req.flash("success_msg","Categoria Deletada com Sucesso"); 
-        req.redirect("/admin/categorias")
-    }).catch((err)=>{
+        res.redirect("/admin/categorias")
+    })
+    .catch((err)=>{
         req.flash("error_msg","Houve um Erro ao Deletar")
-        req.redirect("/admin/categorias") 
+        res.redirect("/admin/categorias") 
     })
 }) 
-   
   router.get("/categorias/add",(req,res)=>{
   res.render("admin/addcategorias")
 })
