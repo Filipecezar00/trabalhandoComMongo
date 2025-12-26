@@ -124,7 +124,34 @@ res.redirect("/admin")
 })
 
 router.post("/postagens/nova",(req,res)=>{
-    
+    let erros = []
+    if(!req.body.titulo){
+        erros.push({texto:"Houve um erro ao Preencher o Titulo"})
+    }
+    if(!req.body.slug){
+         erros.push({texto:"Houve um Erro ao Preencher o Slug"})
+    }
+    if(!req.body.descricao){
+        erros.push({texto:"Houve um Erro ao preencher a descrição"})
+    }
+    if(!req.body.conteudo){
+        erros.push({texto:"Houve um Erro ao Preencher o Contéudo"}) 
+    } 
+    if(req.body.titulo && req.body.titulo.length<2){
+      erros.push({texto:"Título muito Curto"})
+    }
+    if(req.body.slug && req.body.slug.length<2){
+      erros.push({texto:"Slug Muito Curto"})
+    }
+    if(req.body.descricao && req.body.descricao.length<2){
+      erros.push({texto:"Descrição Muito Curta"})
+    }
+    if(req.body.conteudo && req.body.conteudo.length<2){
+      erros.push({texto:"Conteúdo muito Curto"})
+    }
+    if(erros.length>0){
+        return res.render("admin/addpostagem",{erros})
+    }
 })
 
 module.exports = router
