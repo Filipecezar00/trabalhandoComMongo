@@ -112,5 +112,8 @@ router.post("/categorias/nova",(req,res)=>{
   router.get("/categorias/add",(req,res)=>{
   res.render("admin/addcategorias")
 })
+router.post("/postagens/nova",(req,res)=>{
+    
+})
 
 module.exports = router
