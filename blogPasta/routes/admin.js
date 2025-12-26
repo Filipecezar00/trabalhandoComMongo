@@ -3,6 +3,8 @@ const router = express.Router()
 const mongoose = require("mongoose")
 require("../models/Categoria")
 const Categoria = mongoose.model("categorias")
+require("../models/Postagem")
+const Postagem = mongoose.model("postagens")
 
 router.get('/',(req,res)=>{
    res.render("admin/index"); 
@@ -149,8 +151,28 @@ router.post("/postagens/nova",(req,res)=>{
     if(req.body.conteudo && req.body.conteudo.length<2){
       erros.push({texto:"Conteúdo muito Curto"})
     }
+    if(req.body.categoria=="0"){
+       erros.push({text:"Categoria Inválida"})
+    }
     if(erros.length>0){
         return res.render("admin/addpostagem",{erros})
+    }else{
+        const novaPostagem={
+            titulo:req.body.titulo,
+            descricao:req.body.descricao, 
+            conteudo:req.body.conteudo,
+            categoria:req.body.categoria, 
+            slug:req.body.slug
+       }
+       new Postagem(novaPostagem).save().lean()
+       .then(()=>{
+        req.flash("success_msg","Postagem Criada Com Sucesso"); 
+        res.redirect("/admin/postagens")
+       })
+       .catch((err)=>{
+        req.flash("error_msg","Erro ao Criar a Postagem") 
+        res.redirect("/admin/postagens")
+       })
     }
 })
 
