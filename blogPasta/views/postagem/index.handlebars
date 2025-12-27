@@ -1,5 +1,10 @@
-<h1>{{postagem.titulo}}</h1>
-<hr>
-<small>Data de Publicação: {{postagem.data}}</small><br>
-<hr> 
-{{postagem.conteudo}}
+        <h1>{{postagem.titulo}}</h1>
+        <hr>
+        {{#if postagem.categoria}}
+        <small>Categoria: {{postagem.categoria.nome}}</small><br>
+        {{else}}
+        <small>Categoria: Não definida</small><br> 
+        {{/if}}
+        <small>Data de Publicação: {{postagem.data}}</small>
+        <hr>
+        {{postagem.conteudo}}
