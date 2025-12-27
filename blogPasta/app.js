@@ -43,7 +43,7 @@ const Postagem = mongoose.model("postagens")
         
 //Rotas   
 app.get('/',(req,res)=>{
-Postagem.find().populate("categoria").sort({data:"desc"})
+Postagem.find().populate("categoria").sort({data:"desc"}).lean()
 .then((postagens)=>{
 res.render("index",{postagens})
 }).catch(()=>{
