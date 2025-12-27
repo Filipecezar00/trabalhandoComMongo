@@ -1,1 +1,24 @@
-<h2>Página de Posts</h2>
+<div class="container my-5">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Bem vindo ao Blog</h1>
+            <p class="col-md-8 fs-4">
+                Um sistema de Postagens feito com Node.Js, Express e MongoDb. 
+            </p>
+            <a class="btn btn-primary btn-lg" href="#">Crie Uma Conta</a>
+        </div>
+    </div>
+</div>
+<hr>
+<h2>Postagens Recentes: </h2>
+{{#each postagens}} 
+<div class="card">
+    <div class="card-body">
+        <h3>{{titulo}}</h3>
+        <p>{{descricao}}</p>
+    </div>
+</div>
+{{else}}
+<h5>Nenhuma Postagem</h5>
+
+{{/each}}
