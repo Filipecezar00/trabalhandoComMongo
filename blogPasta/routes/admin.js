@@ -182,5 +182,8 @@ router.post("/postagens/nova",(req,res)=>{
        })
     }
 })
+router.get("/postagens/edit/:id",(req,res)=>{
+    res.render("admin/editpostagens")
+})
 
 module.exports = router
