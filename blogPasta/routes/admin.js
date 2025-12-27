@@ -114,10 +114,24 @@ router.post("/categorias/nova",(req,res)=>{
   router.get("/categorias/add",(req,res)=>{
   res.render("admin/addcategorias")
 })
+
+// Rota para Listar Postagens 
+router.get("/postagens",(req,res)=>{
+    Postagem.find().lean() 
+    .then((postagens)=>{
+        res.render("admin/postagens",{postagens}) 
+    })
+    .catch(err=>{
+        req.flash("error_msg","Erro ao listar Postagens") 
+        req.redirect("/admin")
+    })
+})
+
+// Rota para abrir o Formulário 
 router.get("/postagens/add",(req,res)=>{
 Categoria.find().lean()
 .then((categorias)=>{
-res.render("admin/postagens",{categorias:categorias})
+res.render("admin/addpostagem",{categorias:categorias})
 })
 .catch((err)=>{
 req.flash("error_msg","Houve um erro ao Carregar o formulário")
@@ -127,35 +141,28 @@ res.redirect("/admin")
 
 router.post("/postagens/nova",(req,res)=>{
     let erros = []
-    if(!req.body.titulo){
-        erros.push({texto:"Houve um erro ao Preencher o Titulo"})
+    if(!req.body.titulo || req.body.titulo.length<2){
+      erros.push({texto:"Título Invalido"})
     }
-    if(!req.body.slug){
-         erros.push({texto:"Houve um Erro ao Preencher o Slug"})
+    if(!req.body.slug || req.body.slug.length<2){
+      erros.push({texto:"Slug invalido"})
     }
-    if(!req.body.descricao){
-        erros.push({texto:"Houve um Erro ao preencher a descrição"})
+    if(!req.body.descricao || req.body.descricao.length<2){
+      erros.push({texto:"Descrição invalido"})
     }
-    if(!req.body.conteudo){
-        erros.push({texto:"Houve um Erro ao Preencher o Contéudo"}) 
-    } 
-    if(req.body.titulo && req.body.titulo.length<2){
-      erros.push({texto:"Título muito Curto"})
+    if(!req.body.conteudo || req.body.conteudo.length<2){
+      erros.push({texto:"Conteúdo invalido"})
     }
-    if(req.body.slug && req.body.slug.length<2){
-      erros.push({texto:"Slug Muito Curto"})
-    }
-    if(req.body.descricao && req.body.descricao.length<2){
-      erros.push({texto:"Descrição Muito Curta"})
-    }
-    if(req.body.conteudo && req.body.conteudo.length<2){
-      erros.push({texto:"Conteúdo muito Curto"})
-    }
-    if(req.body.categoria=="0"){
-       erros.push({text:"Categoria Inválida"})
+    if(!req.body.categoria=="0"){
+       erros.push({texto:"Categoria Inválida"})
     }
     if(erros.length>0){
-        return res.render("admin/addpostagem",{erros})
+       Categoria.find().lean().then(categorias=>{
+        res.render("admin/addpostagem",{
+            erros:erros,
+            categorias:categorias
+        })
+       })
     }else{
         const novaPostagem={
             titulo:req.body.titulo,
@@ -164,7 +171,7 @@ router.post("/postagens/nova",(req,res)=>{
             categoria:req.body.categoria, 
             slug:req.body.slug
        }
-       new Postagem(novaPostagem).save().lean()
+       new Postagem(novaPostagem).save()
        .then(()=>{
         req.flash("success_msg","Postagem Criada Com Sucesso"); 
         res.redirect("/admin/postagens")

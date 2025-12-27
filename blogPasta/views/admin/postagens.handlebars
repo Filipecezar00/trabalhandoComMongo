@@ -7,19 +7,19 @@
         <h4>Nova Postagem</h4>
         <form action="/admin/postagens/nova" method="POST">
             <label for="titulo">Titulo:</label>
-            <input type="text" name="titulo" class="form-control" id="titulo" required>
+            <input type="text" name="titulo" class="form-control" id="titulo"  minlength="2" required>
             <label for="slug">Slug:</label>
-            <input type="text" name="slug" class="form-control" id="slug" required>
+            <input type="text" name="slug" class="form-control" id="slug"  minlength="2" required>
             <label for="descricao">Descrição:</label>
-            <input type="text" name="descricao" class="form-control" id="descricao" required>
+            <input type="text" name="descricao" class="form-control" id="descricao" minlength="2" required >
             <label for="conteudo">Contéudo:</label>
-             <textarea name="conteudo" class="form-control" required></textarea>
+             <textarea name="conteudo" class="form-control"  minlength="2" required></textarea>
              <label for="categoria">Categoria:</label>
-             <select name="categoria" class="form-select">
+             <select name="categoria" class="form-select" required>
                 {{#each categorias}}
                 <option value="{{_id}}">{{nome}}</option>
                 {{else}}
-                <option value="0">Nenhuma Categoria Registrada</option>
+                <option value="0" disabled selected>Nenhuma Categoria Registrada</option>
                 {{/each}}
               </select>
                 <button class="btn btn-success mt-4" type="submit">Criar Postagem</button>
