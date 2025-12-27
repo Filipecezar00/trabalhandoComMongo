@@ -218,6 +218,13 @@ router.post("/postagens/edit",(req,res)=>{
             res.redirect("/admin/postagens")
         })
     })
-
-
+router.get("/postagens/deletar/:id",(req,res)=>{
+    Postagem.deleteOne({_id: req.params.id})
+    .then(()=>{
+        res.redirect("/admin/postagens")
+    }).catch(()=>{
+        req.flash("error_msg","Houve um erro Interno"); 
+        req.redirect("/admin/postagens")
+    })
+})
 module.exports = router
