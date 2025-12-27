@@ -183,9 +183,10 @@ router.post("/postagens/nova",(req,res)=>{
     }
 })
 router.get("/postagens/edit/:id",(req,res)=>{
-    Postagem.findById({_id:req.params.id}).lean()
+    Postagem.findById(req.params.id).lean()
     .then((postagem)=>{
-        Categoria.findById().lean().then((categorias)=>{
+        Categoria.find().lean()
+        .then((categorias)=>{
         res.render("admin/editpostagens",{categorias,postagem})
 
         }).catch((err)=>{
@@ -197,7 +198,26 @@ router.get("/postagens/edit/:id",(req,res)=>{
         req.flash("error_msg","Houve um Erro ao Carregar o formulário de edição") 
         res.redirect("/admin/postagens")
     })
- 
 })
+router.post("/postagens/edit",(req,res)=>{
+    Postagem.findById(req.body.id)
+     .then((postagem)=>{
+        postagem.titulo = req.body.titulo
+        postagem.slug=req.body.slug
+        postagem.descricao = req.body.descricao
+        postagem.conteudo=req.body.conteudo    
+        postagem.categoria = req.body.categoria
+
+        return postagem.save()
+
+    }).then(()=>{
+            req.flash("success_msg","Postagem Editada com Sucesso")
+            res.redirect("/admin/postagens")
+      }).catch(()=>{
+            req.flash("error_msg","Erro ao editar")
+            res.redirect("/admin/postagens")
+        })
+    })
+
 
 module.exports = router
