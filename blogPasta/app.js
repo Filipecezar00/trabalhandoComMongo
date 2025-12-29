@@ -83,6 +83,27 @@ res.redirect("/")
 })
 })
 
+app.get("/categorias/:slug",(req,res)=>{
+    Categoria.findOne({slug:req.params.slug}).lean()
+    .then((categoria)=>{
+        if(!categoria){
+            Postagem.find({categoria:categoria._id}).lean()
+            .then((postagens)=>{
+                res.render("categorias/postagens",{postagens,categoria})
+            }).catch((err)=>{
+                req.flash("error_msg","Houve um erro ao descrever as Postagens")
+                res.redirect("/")
+            })
+        }else{
+            req.flash("error_msg","Essa Categoria não Existe")
+            res.redirect("/")
+        }
+    })
+    .catch((err)=>{
+        req.flash("error_msg","Houve um erro Interno ao Carregar a Página")
+        res.redirect('/')
+    })
+})
 app.get("/404",(req,res)=>{
 res.send("Erro 404")
 })
