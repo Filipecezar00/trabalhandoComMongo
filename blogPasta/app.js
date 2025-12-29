@@ -73,9 +73,9 @@ app.get("/postagem/:slug",(req,res)=>{
 })
 
 app.get("/categorias",(req,res)=>{
-Categoria.find()
+Categoria.find().lean()
 .then((categorias)=>{
-res.render("categorias/index",categorias)
+res.render("categorias/index",{categorias})
 })
 .catch((err)=>{
 req.flash("error_msg","Houve um Erro Interno ao Listar as Categorias")
