@@ -10,6 +10,8 @@ const session = require("express-session")
 const flash = require("connect-flash")
 require("./models/Postagem")
 const Postagem = mongoose.model("postagens")
+require('./models/Categoria')
+const Categoria = mongoose.model("categorias")
 // configurações 
     // Sessão 
     app.use(session({
@@ -70,6 +72,16 @@ app.get("/postagem/:slug",(req,res)=>{
     })
 })
 
+app.get("/categorias",(req,res)=>{
+Categoria.find()
+.then((categorias)=>{
+res.render("categorias/index",categorias)
+})
+.catch((err)=>{
+req.flash("error_msg","Houve um Erro Interno ao Listar as Categorias")
+res.redirect("/")
+})
+})
 
 app.get("/404",(req,res)=>{
 res.send("Erro 404")
