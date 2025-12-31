@@ -14,7 +14,7 @@ module.exports = function(passport){
             }
             bcrypt.compare(senha,usuario.senha,(erro,batem)=>{
                 if(batem){
-                    return done(null,user)
+                    return done(null,usuario)
                 }else{
                     return done(null,false,{message:"Senha Incorreta"})
                 }
@@ -25,8 +25,8 @@ module.exports = function(passport){
         done(null,usuario.id)
     })
     passport.deserializeUser((id,done)=>{
-        User.findById(id,(err,usuario)=>{
-            done(err,user)
+        usuario.findById(id,(err,usuario)=>{
+            done(err,usuario)
         })
     })
 }
