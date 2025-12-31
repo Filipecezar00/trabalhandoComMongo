@@ -5,15 +5,15 @@ require("../models/Categoria")
 const Categoria = mongoose.model("categorias")
 require("../models/Postagem")
 const Postagem = mongoose.model("postagens")
-
-router.get('/',(req,res)=>{
+const {eAdmin} = require("../helpers/eAdmin") 
+router.get('/',eAdmin,(req,res)=>{
    res.render("admin/index"); 
 })
-router.get('/posts',(req,res)=>{
+router.get('/posts', eAdmin,(req,res)=>{
     res.send("Página de Posts"); 
 })
 
-router.get('/categorias',(req,res)=>{
+router.get('/categorias',eAdmin,(req,res)=>{
     Categoria.find().lean() 
        .then((categorias)=>{
         res.render("admin/categorias",{categorias})
@@ -24,7 +24,7 @@ router.get('/categorias',(req,res)=>{
     })
 })
 
-router.post("/categorias/nova",(req,res)=>{
+router.post("/categorias/nova",eAdmin,(req,res)=>{
     var erros = []
     if(!req.body.nome || typeof req.body.nome==undefined || req.body.nome == null ){
      erros.push({texto:"Nome Inválido"})
@@ -51,7 +51,7 @@ router.post("/categorias/nova",(req,res)=>{
     })
    }
 })
-  router.get("/categorias/edit/:id",(req,res)=>{
+  router.get("/categorias/edit/:id",eAdmin,(req,res)=>{
     Categoria.findOne({_id:req.params.id}).lean().then((categoria)=>{
          res.render("admin/editcategorias" , {categoria: categoria});
     }).catch((err)=>{
@@ -60,7 +60,7 @@ router.post("/categorias/nova",(req,res)=>{
     })
     
   })
-    router.post("/categorias/edit",(req,res)=>{
+    router.post("/categorias/edit",eAdmin,(req,res)=>{
      let erros = []
 
      if(!req.body.nome|| typeof req.body.nome==undefined ||req.body.nome==null){
@@ -100,7 +100,7 @@ router.post("/categorias/nova",(req,res)=>{
         res.redirect("/admin/categorias")
       })
  })
-  router.post("/categorias/deletar",(req,res)=>{
+  router.post("/categorias/deletar",eAdmin,(req,res)=>{
      Categoria.findByIdAndDelete(req.body.id)
       .then(()=>{
         req.flash("success_msg","Categoria Deletada com Sucesso"); 
@@ -116,7 +116,7 @@ router.post("/categorias/nova",(req,res)=>{
 })
 
 // Rota para Listar Postagens 
-router.get("/postagens",(req,res)=>{
+router.get("/postagens",eAdmin,(req,res)=>{
     Postagem.find().populate("categoria").sort({data:"desc"}).lean()
     .then((postagens)=>{
         res.render("admin/postagens",{postagens}) 
@@ -128,7 +128,7 @@ router.get("/postagens",(req,res)=>{
 })
 
 // Rota para abrir o Formulário 
-router.get("/postagens/add",(req,res)=>{
+router.get("/postagens/add",eAdmin,(req,res)=>{
 Categoria.find().lean()
 .then((categorias)=>{
 res.render("admin/addpostagem",{categorias:categorias})
@@ -139,7 +139,7 @@ res.redirect("/admin")
 })
 })
 
-router.post("/postagens/nova",(req,res)=>{
+router.post("/postagens/nova",eAdmin,(req,res)=>{
     let erros = []
     if(!req.body.titulo || req.body.titulo.length<2){
       erros.push({texto:"Título Invalido"})
@@ -186,7 +186,7 @@ router.post("/postagens/nova",(req,res)=>{
        })
     }
 })
-router.get("/postagens/edit/:id",(req,res)=>{
+router.get("/postagens/edit/:id",eAdmin,(req,res)=>{
     Postagem.findById(req.params.id).lean()
     .then((postagem)=>{
         Categoria.find().lean()
@@ -203,7 +203,7 @@ router.get("/postagens/edit/:id",(req,res)=>{
         res.redirect("/admin/postagens")
     })
 })
-router.post("/postagens/edit",(req,res)=>{
+router.post("/postagens/edit",eAdmin,(req,res)=>{
     Postagem.findById(req.body.id)
      .then((postagem)=>{
         postagem.titulo = req.body.titulo
@@ -222,7 +222,7 @@ router.post("/postagens/edit",(req,res)=>{
             res.redirect("/admin/postagens")
         })
     })
-router.get("/postagens/deletar/:id",(req,res)=>{
+router.get("/postagens/deletar/:id",eAdmin,(req,res)=>{
     Postagem.deleteOne({_id: req.params.id})
     .then(()=>{
         res.redirect("/admin/postagens")
