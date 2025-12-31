@@ -21,4 +21,12 @@ module.exports = function(passport){
             })
         })
     }))
+    passport.serializeUser((usuario,done)=>{
+        done(null,usuario.id)
+    })
+    passport.deserializeUser((id,done)=>{
+        User.findById(id,(err,usuario)=>{
+            done(err,user)
+        })
+    })
 }
