@@ -1,9 +1,10 @@
 const express = require("express"); 
 const router = express.Router()
 const mongoose = require('mongoose');
-const { app_features } = require("moongose/models");
+// const { app_features } = require("mongoose/models");
 require("../models/usuario") 
-const usuario = mongoose.model("usuarios")
+const Usuario = mongoose.model("usuarios")
+const bcrypt = require("bcryptjs")
 
 router.get("/registro",(req,res)=>{
     res.render('usuarios/registro')
@@ -28,9 +29,42 @@ router.post("/registro",(req,res)=>{
     }
 
     if(erros.length>0){
-        res.render("usuarios/registro",{erros:erros})
+        return res.render("usuarios/registro",{erros})
     }else{
+        Usuario.findOne({email:req.body.email}).then((usuario)=>{
+            if(usuario){
+                req.flash("error_msg","Já existe uma Conta com esse email")
+              return  res.redirect("/usuarios/registro")
+            }
 
+                const novoUsuario = new Usuario({
+                        nome:req.body.nome,
+                        email:req.body.email, 
+                        senha:req.body.senha 
+                })
+
+                bcrypt.genSalt(10,(erro,salt)=>{
+                    bcrypt.hash(novoUsuario.senha,salt,(erro,hash)=>{
+                        if(erro){
+                            req.flash("error_msg","Houve um erro no salvamento")
+                           return res.redirect("/")
+                        }
+                        novoUsuario.senha=hash
+
+                        novoUsuario.save().then(()=>{
+                            req.flash("success_msg","Usuario Criado Com Sucesso") 
+                            res.redirect("/")
+                        }).catch(()=>{
+                            req.flash("error_msg","Houve um erro ao Criar o Usuario")
+                            res.redirect("/usuarios/registro")
+                        })
+                    })
+                })
+            
+        }).catch((err)=>{
+            req.flash("error_msg","Erro ao Cadastrar Usuario")
+            res.redirect("/")
+        })
     }
 
 })
